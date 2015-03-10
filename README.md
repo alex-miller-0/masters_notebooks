@@ -1,4 +1,4 @@
 # masters_notebooks
-A series of iPython Notebooks for my maters report on Solid Oxide Fuel Cells (data analysis).
+A series of iPython Notebooks covering the data analysis process for my maters thesis on Solid Oxide Fuel Cells.
 
-The notebooks are labeled in the order of the data analysis process. Reused, custom functions are in sofc_func.py
+The notebooks are labeled in the order of the data analysis process. Reused custom functions are in sofc_func.py
