@@ -6,5 +6,14 @@ The notebooks are labeled in the order of the data analysis process. Reused cust
 # Static Notebooks:
 **The following links show static versions of the notebooks. Interactive notebooks can be found in the python directory of this repository.
 
-### 1: Manual cross-validation
+#### Part 1: Manual cross-validation
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/1_manual_cv.ipynb
+
+#### Parts 2 and 3: Leave-k-out cross validation and categorical variables
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/2_leave_k_out_categories.ipynb
+
+#### Part 4: Sets of quantitative variables
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/4_quantitative_feature_sets.ipynb
+
+#### Part 5: Finalizing the model
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/5_finalizing_the_model.ipynb
