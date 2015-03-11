@@ -10,7 +10,7 @@ The notebooks are labeled in the order of the data analysis process. Reused cust
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/1_manual_cv.ipynb
 
 #### Parts 2 and 3: Leave-k-out cross validation and categorical variables
-http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/2_leave_k_out_categories.ipynb
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/2_leave_k_out_3_categories.ipynb
 
 #### Part 4: Sets of quantitative variables
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/4_quantitative_feature_sets.ipynb
