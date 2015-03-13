@@ -129,6 +129,33 @@ def get_scores(iterations, k, order, len_data, X, Y, ret):
         return np.array(scores).mean(), np.array(scores).std()
 
 
+def add_feature(X, Y, features, threshold, iterations):
+    start = time.clock()
+    print 'Determining if a feature can be added. This may take a few minutes.'
+    k = optimize_k(iterations, len(Y), np.array(X), Y, True)
+    o = optimize_order(iterations, len(X), k, np.array(X), Y, True)
+    _score, _std = get_scores(iterations, k, o, len(X), np.array(X), Y, True)
+
+    
+    for f in features:
+    	start2 = time.clock()
+        test_x = X.copy()
+        test_x[f] = features[f]
+        arr_x = np.array(test_x)
+        k = optimize_k(iterations, len(test_x), arr_x, Y, True)
+        o = optimize_order(iterations,len(test_x), k, arr_x, Y, True)
+        new_score, std = get_scores(iterations, k, o, len(test_x), arr_x, Y, True)
+        if new_score - _score > threshold:
+            print 'Added ' + f + ' to the model, which boosts the score from ' + _score + ' to ' + new_score
+            print 'Executed in ' + (time.clock()-start) + 's'
+            return test_x
+        else:
+        	print 'Could not add ' + str(f) + ' to the model because its change on score was ' + str((new_score - _score)) + ' (' + str(time.clock() - start2) + 's)'
+    	
+    print 'Could not add any features to the model.'
+    print 'Executed in ' , (time.clock()-start) , 's'
+    return X
+
 
 def e_affinity():
     ea = {
