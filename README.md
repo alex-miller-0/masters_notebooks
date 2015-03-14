@@ -1,4 +1,4 @@
-test
+
 # masters_notebooks
 A series of iPython Notebooks covering the data analysis process for my maters thesis on Solid Oxide Fuel Cells.
 
@@ -18,3 +18,6 @@ http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/py
 
 #### Part 5: Finalizing the model
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/5_finalizing_the_model.ipynb
+
+#### Part 6: Adding the temperature dimension
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/6_temperature.ipynb
