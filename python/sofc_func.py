@@ -1,11 +1,14 @@
-import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
+import csv
+import math
+import pandas as pd
 import time
 from sklearn import cross_validation
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import Ridge
-import matplotlib.pyplot as plt
+from sklearn.feature_selection import RFE
 
 
 def arrhenius(param, ea, t, output_t):
@@ -37,7 +40,6 @@ def optimize_k(iterations, len_data, X, Y, ret):
     std = []
 
     start = time.clock()
-
     for i in range(2, 10):
         temp_scores = []
         for cycle in range(iterations):
@@ -129,7 +131,22 @@ def get_scores(iterations, k, order, len_data, X, Y, ret):
         return np.array(scores).mean(), np.array(scores).std()
 
 
-def add_feature(X, Y, features, threshold, iterations):
+def add_feature(X, Y, _features, threshold, iterations):
+    if type(X) == type(None):
+        score = 0
+        feat = None
+        for f in _features:
+            _x = np.array([_features[f]]).T
+            k = optimize_k(iterations, len(Y), _x, Y, True)
+            o = optimize_order(iterations, len(Y),k, _x, Y, True)
+            _score, _std = get_scores(iterations, k, o, len(Y), _x, Y, True)
+            print _score, f
+            if _score > score:
+                feat = f
+                score = _score
+        print 'The best feature to start with is ' + str(feat) + ' with a score of ' + str(score)
+        return _features[[feat]]
+
     start = time.clock()
     print 'Determining if a feature can be added. This may take a few minutes.'
     k = optimize_k(iterations, len(Y), np.array(X), Y, True)
@@ -137,10 +154,10 @@ def add_feature(X, Y, features, threshold, iterations):
     _score, _std = get_scores(iterations, k, o, len(X), np.array(X), Y, True)
 
     
-    for f in features:
+    for f in _features:
     	start2 = time.clock()
         test_x = X.copy()
-        test_x[f] = features[f]
+        test_x[f] = _features[f]
         arr_x = np.array(test_x)
         k = optimize_k(iterations, len(test_x), arr_x, Y, True)
         o = optimize_order(iterations,len(test_x), k, arr_x, Y, True)
