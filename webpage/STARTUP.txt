@@ -1,0 +1,18 @@
+Loading SOFC webpage locally
+
+1) Navigate to the directory with this document in your terminal.
+
+2*) Run the command:
+
+	python -m SimpleHTTPServer
+
+3) Open your browser and navigate to the address:
+
+	localhost:8000
+
+
+
+
+* Python will run out of port 8000 by default. If something else
+is running on this port, you can add a different port number to the end of the command
+and then change the browser address to that number.

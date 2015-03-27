@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<script type="text/javascript" src="libs/jquery.min.js"></script>
+<script type="text/javascript" src="libs/jquery.csv.js"></script>
+<script ty[e="text/javascript" src="libs/bootstrap.min.js"></script>
+<script type="text/javascript" src="libs/d3.min.js"></script>
+<script type="text/javascript" src="libs/jquery-ui.min.js"></script>
+<script type="text/javascript" src="processData.js"></script>
+<script type="text/javascript" src="drawScatter.js"></script>
+
+
+<link href="stylesheets/myStyle.css" rel="stylesheet", type="text/css">
+
+<script type="text/javascript">
+  function disableSelection(target){
+    if (typeof target.onselectstart!="undefined") //IE route
+      target.onselectstart=function(){return false}
+    else if (typeof target.style.MozUserSelect!="undefined") //Firefox route
+      target.style.MozUserSelect="none"
+    else //All other route (ie: Opera)
+      target.onmousedown=function(){return false}
+    target.style.cursor = "default"
+  }
+
+</script>
+
+</head>
+
+
+
+
+<script type="text/javascript" src="docReady.js"></script>
+
+<style>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.ui-slider{margin-top:15px;}
+#temp {margin-top:10px;}
+body{
+  background-color:#E6E8E6;
+}
+
+
+.nav-pills > li > a {
+  background-color: #DDD4BC;
+  font-size:14px;
+  color: #3D3C3A;
+  border-radius: 5px 5px 5px 5px;
+  padding: 10px;
+}
+.nav-pills > li > a:hover{
+  background-color: #428BCA;
+  color:#fff;
+}
+
+
+
+
+</style>
+
+
+
+
+<body>
+
+
+
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="bottom-navbar" style="margin-bottom:200px;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<h4>SOFC Materials</h4>
+			</div>
+			<div class="collase navbar-collapse">
+				<div class="row">
+          <div class="col-sm-2">
+					 <div id="slider"></div>
+				  </div>
+				
+          <div class="col-sm-1">
+					 <input type="text" id="temp" readonly style="background:transparent; border:0; font-weight:bold"></input>
+				  </div>
+
+          <div class="col-sm-7">
+            <div class='pull-left'>
+              Sort by:
+              <a id="family-sort"
+              data-toggle="modal" data-target="#myModal">
+                Material Family
+              </a>
+              |
+              <a id="sample-type-sort"
+                data-toggle="modal" data-target="#myModal">
+                Sample Type
+              </a>
+              |
+              <a id="measurement-type-sort"
+                data-toggle="modal" data-target="#myModal">
+                Measurement Type
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+
+			</div>
+		</div>
+	</nav>
+
+
+
+ <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <div id="modal-body-div"></div>
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="apply-sort-button"
+          data-dismiss="modal">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+<div class="row" style="margin-top:100px;">
+  <center><div class="col-sm-12" id="page-container"></div></center>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation" id="bottom-navbar" style="margin-top:75px;">
+	<div class="row">
+
+		<div class="col-sm-12">
+      <div class="well">
+        <table>
+          <tbody>
+
+
+          <tr>
+            <td style="width:7%;"><b><h5>X-axis</h5></b></td>
+            <td style="width:10%;"><a href="#" id="x-dstar" 
+              style="font-weight:bold; font-size:16px; color:#B81D18;">
+              <center>D*</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-kstar">
+              <center>k*</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-ead">
+              <center>Ea(D*)</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-eak">
+              <center>Ea(k*)</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-mass">
+              <center>Average mass</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-radius">
+              <center>Average radius</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-tol">
+              <center>Tolerance factor</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="x-diff">
+              <center>Radius difference</center>
+            </a></td>
+          </tr>
+
+          <tr>
+            <td style="width:7%;"><b><h5>Y-axis</h5></b></td>
+            <td style="width:10%;"><a href="#"  id="y-dstar">
+              <center>D*</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-kstar"
+              style="font-weight:bold; font-size:16px; color:#B81D18;">
+              <center>k*</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-ead">
+              <center>Ea(D*)</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-eak">
+              <center>Ea(k*)</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-mass">
+              <center>Average mass</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-radius">
+              <center>Average radius</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-tol">
+              <center>Tolerance factor</center>
+            </a></td>
+            <td style="width:10%;"><a href="#" id="y-diff">
+              <center>Radius difference</center>
+            </a></td>
+          </tr>
+
+        </tbody>
+        </table>
+  		</div>
+		</div>
+
+
+	</div>
+</nav>
+
+
+
+
+
+	<div id="sort-rows"> 
+    <div class="row" id="sort-row">
+	   	<ul class="nav nav-pills nav-justified col-sm-12" id="sort-options">
+		  </ul>
+	  </div>
+  </div>
+
+
+
+	
+
+
+
+
+
+<script type="text/javascript">
+  disableSelection(document.body)
+  x_var = 'd_star', y_var = 'k_star';
+  sort_options = [];
+  
+  drawScatter();
+
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>
