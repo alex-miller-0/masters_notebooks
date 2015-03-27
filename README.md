@@ -2,9 +2,7 @@
 # masters_notebooks
 This is a series of iPython Notebooks covering the data analysis process for my maters thesis on Solid Oxide Fuel Cells. My goal was to discover, through a relatively small dataset, what features in a material led to fast oxide diffusion in SOFCs. I mainly used Pandas for data processing and SciKit Learn for machine learning algorithms. This was not a typical machine learning problem because I had a small amount of data and was not interested in maximizing the fit. I was instead interested in developing some sort of a theory that was physically justifiable (i.e. one or two factors influencing diffusion in a 1st, 2nd, or 3rd polynomial). I did find that the best fit to the data was with a ~7th order polynomial, but since this was created with regularization, I reduced it down to a third order polynomial model.
 
-My conclusion was that the log of combined surface exchange and bulk diffusion coefficients was predicted by a third order function of the electron affinity of the B-site cation.
-
-**ln(D\*k\*) ~ a*EN_B + b*(EN_B^2) + c*(EN_B^3)**
+My conclusion was that the log of combined surface exchange and bulk diffusion coefficients was predicted by a function of the electron affinity of the B-site cation.
 
 The notebooks are labeled in the order of the data analysis process. Reused custom functions can be found in sofc_func.py
 
@@ -40,3 +38,8 @@ http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/py
 Before concluding, I decided to revisit the categorical variables that didn't do much for the machine learning part. Here I performed ANOVA tests and determined that two of the categories had groups that were statistically significant. However, I determined this was slightly misleading because most of the variation was captured by one subgroup. 
 
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/7_extras.ipynb
+
+##### Part 8: Splitting the data
+After consideration of physical mechanisms, I decided to remove Ruddlesden-Popper materials from the analysis and try to build a model separately for them. Diffusion in Perovskites and Double Perovskites occurs by an vacancy migration mechanism. In Ruddlesden-Popper, it occurs by an interstitial mechanism. Electron affinity, the feature on which the model has been built, is not relevent for an interstitial mechanism.
+
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/8_separate_families.ipynb
