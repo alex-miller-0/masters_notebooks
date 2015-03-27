@@ -40,3 +40,8 @@ http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/py
 Before concluding, I decided to revisit the categorical variables that didn't do much for the machine learning part. Here I performed ANOVA tests and determined that two of the categories had groups that were statistically significant. However, I determined this was slightly misleading because most of the variation was captured by one subgroup. 
 
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/7_extras.ipynb
+
+##### Part 8: Splitting the data
+After consideration of physical mechanisms, I decided to remove Ruddlesden-Popper materials from the analysis and try to build a model separately for them. Diffusion in Perovskites and Double Perovskites occurs by an vacancy migration mechanism. In Ruddlesden-Popper, it occurs by an interstitial mechanism. Electron affinity, the feature on which the model has been built, is not relevent for an interstitial mechanism.
+
+http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/8_separate_families.ipynb
