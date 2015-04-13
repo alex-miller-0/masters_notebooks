@@ -20,8 +20,8 @@ As an absolute beginner in machine learning techniques, I tried to cross-validat
 
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/1_manual_cv.ipynb
 
-##### Parts 2 and 3: K-fold cross-validation and categorical variables
-In this notebook, I discovered K-fold cross-validation and discovered that it is vastly preferable to manual CV, especially for small data sets. I found two features that predicted the model very well. I also looked at categorical variables and found they added virtually nothing to the variation that was being captured by my model. 
+##### Parts 2 and 3: Leave-One-Out cross-validation and categorical variables
+In this notebook, I discovered Leave-One-Out cross-validation and discovered that it is vastly preferable to manual CV, especially for small data sets. I found two features that predicted the model very well. I also looked at categorical variables and found they added virtually nothing to the variation that was being captured by my model. 
 
 http://nbviewer.ipython.org/github/asmiller1989/masters_notebooks/blob/master/python/2_leave_k_out_3_categories.ipynb
 
