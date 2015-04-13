@@ -9,6 +9,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import Ridge
 from sklearn.feature_selection import RFE
+from sklearn.metrics import mean_squared_error
 
 
 def arrhenius(param, ea, t, output_t):
@@ -38,13 +39,15 @@ def optimize_k(iterations, len_data, X, Y, ret):
     scores = []
     k = []
     std = []
-
     start = time.clock()
-    for i in range(2, 10):
+    for i in range(1, 2):
+        print i
+        return 0
         temp_scores = []
         for cycle in range(iterations):
             cycle_scores = []
-            lko = cross_validation.KFold(len_data, n_folds=i, shuffle=True)
+            #lko = cross_validation.KFold(len_data, n_folds=i, shuffle=True)
+            lko = cross_validation.LeavePOut(len_data, i)
             for train_index, test_index in lko:
                 x_train, x_test = X[train_index], X[test_index]
                 y_train, y_test = Y[train_index], Y[test_index]
@@ -73,16 +76,19 @@ def optimize_order(iterations, len_data, k, X, Y, ret):
 
     start = time.clock()
 
-    for i in range(1, 10):
+    for i in range(1, 7):
         temp_scores = []
         for cycle in range(iterations):
             cycle_scores = []
-            lko = cross_validation.KFold(len_data, n_folds=k, shuffle=True)
+            #lko = cross_validation.KFold(len_data, n_folds=k, shuffle=True)
+            lko = cross_validation.LeavePOut(len_data, k)
             for train_index, test_index in lko:
                 x_train, x_test = X[train_index], X[test_index]
                 y_train, y_test = Y[train_index], Y[test_index]
                 model = make_pipeline(PolynomialFeatures(i), Ridge()).fit(x_train, y_train)
-                cycle_scores.append(model.score(x_test, y_test))
+                y_pred = model.predict(x_test)
+                cycle_scores.append(mean_squared_error(y_test, y_pred))
+                #cycle_scores.append(model.score(x_test, y_test))
             temp_scores.append(np.array(cycle_scores).mean())
         if i < 6:
             scores_low.append(np.array(temp_scores).mean())
@@ -94,64 +100,67 @@ def optimize_order(iterations, len_data, k, X, Y, ret):
         fig = plt.figure(figsize=(14, 4))
 
         plt.subplot(121)
-        plt.title('LKO score vs order')
+        plt.title('MSE vs order')
         plt.xlabel('Order')
-        plt.ylabel('Score')
+        plt.ylabel('Mean Squared Error')
         plt.plot(order, scores)
 
         plt.subplot(122)
-        plt.title('LKO score vs lower orders')
+        plt.title('MSE vs lower orders')
         plt.xlabel('Order')
-        plt.ylabel('Score')
+        plt.ylabel('Mean Squared Error')
         plt.plot(order_low, scores_low, color='red')
 
         plt.show()
         print 'Polynomial order optimization executed in: ' + str(time.clock() - start) + 's'
     else:
-        return order[np.argmax(scores)]
+        #Return the order with the lowest MSE (scores=MSE)
+        return order[np.argmin(scores)]
 
 
 def get_scores(iterations, k, order, len_data, X, Y, ret):
+    r2 = []
     scores = []
     std = []
     for cycle in range(iterations):
         cycle_scores = []
-        lko = cross_validation.KFold(len_data, n_folds=k, shuffle=True)
+        cycle_r2 = []
+        #lko = cross_validation.KFold(len_data, n_folds=k, shuffle=True)
+        lko = cross_validation.LeavePOut(len_data, k)
         for train_index, test_index in lko:
             x_train, x_test = X[train_index], X[test_index]
             y_train, y_test = Y[train_index], Y[test_index]
             model = make_pipeline(PolynomialFeatures(order), Ridge()).fit(x_train, y_train)
-            cycle_scores.append(model.score(x_test, y_test))
+            y_pred = model.predict(x_test)
+            cycle_scores.append(mean_squared_error(y_test, y_pred))
         scores.append(np.array(cycle_scores).mean())
 
     if ret == False:
-        print 'Average score of this model: ' + str(np.array(scores).mean())
-        print 'Standard deviation of scores: ' + str(np.array(scores).std())
+        print 'Average MSE of this model: ' + str(np.array(scores).mean())
+        print 'Standard deviation of MSE: ' + str(np.array(scores).std())
     else:
         return np.array(scores).mean(), np.array(scores).std()
 
 
 def add_feature(X, Y, _features, threshold, iterations):
     if type(X) == type(None):
-        score = 0
+        # Score is the MSE. I will start with a very high value
+        score = 1000000000000
         feat = None
         for f in _features:
             _x = np.array([_features[f]]).T
-            k = optimize_k(iterations, len(Y), _x, Y, True)
-            o = optimize_order(iterations, len(Y),k, _x, Y, True)
-            _score, _std = get_scores(iterations, k, o, len(Y), _x, Y, True)
-            print _score, f
-            if _score > score:
+            o = optimize_order(iterations, len(Y),1, _x, Y, True)
+            _score, _std = get_scores(iterations, 1, o, len(Y), _x, Y, True)
+            if _score < score:
                 feat = f
                 score = _score
-        print 'The best feature to start with is ' + str(feat) + ' with a score of ' + str(score)
+        print 'The best feature to start with is ' + str(feat) + ' with MSE = ' + str(score)
         return _features[[feat]]
 
     start = time.clock()
     print 'Determining if a feature can be added. This may take a few minutes.'
-    k = optimize_k(iterations, len(Y), np.array(X), Y, True)
-    o = optimize_order(iterations, len(X), k, np.array(X), Y, True)
-    _score, _std = get_scores(iterations, k, o, len(X), np.array(X), Y, True)
+    o = optimize_order(iterations, len(X), 1, np.array(X), Y, True)
+    _score, _std = get_scores(iterations, 1, o, len(X), np.array(X), Y, True)
 
     
     for f in _features:
@@ -159,15 +168,15 @@ def add_feature(X, Y, _features, threshold, iterations):
         test_x = X.copy()
         test_x[f] = _features[f]
         arr_x = np.array(test_x)
-        k = optimize_k(iterations, len(test_x), arr_x, Y, True)
-        o = optimize_order(iterations,len(test_x), k, arr_x, Y, True)
-        new_score, std = get_scores(iterations, k, o, len(test_x), arr_x, Y, True)
-        if new_score - _score > threshold:
-            print 'Added ' + f + ' to the model, which boosts the score from ' + _score + ' to ' + new_score
-            print 'Executed in ' + (time.clock()-start) + 's'
+        o = optimize_order(iterations,len(test_x), 1, arr_x, Y, True)
+        new_score, std = get_scores(iterations, 1, o, len(test_x), arr_x, Y, True)
+        change = 100.*(new_score - _score)/_score
+        if change > threshold:
+            print 'Added ' + f + ' to the model, which decreases MSE by '+str(change)+'%'
+            print 'Executed in ' + str(time.clock()-start) + 's'
             return test_x
         else:
-        	print 'Could not add ' + str(f) + ' to the model because its change on score was ' + str((new_score - _score)) + ' (' + str(time.clock() - start2) + 's)'
+        	print 'Could not add ' + str(f) + ' to the model because it only decreased MSE by '+str(change)+'%'
     	
     print 'Could not add any features to the model.'
     print 'Executed in ' , (time.clock()-start) , 's'
