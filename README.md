@@ -1,5 +1,7 @@
 # masters_notebooks
-This is a series of iPython Notebooks covering the data analysis process for my maters thesis on Solid Oxide Fuel Cells. My goal was to discover, through a relatively small dataset, what features in a material led to fast oxide diffusion in SOFCs. I mainly used Pandas for data processing and SciKit Learn for machine learning algorithms. This was not a typical machine learning problem because I had a small amount of data and was not only interested in maximizing the fit, but also in developing a theory that was physically justifiable (i.e. one or two factors influencing diffusion modeled with a 1st, 2nd, or 3rd polynomial).
+This is a series of iPython Notebooks covering the data analysis process for my maters thesis on Solid Oxide Fuel Cells (availble here: https://drive.google.com/open?id=0Bz90riPGRHquN0cyaEF3ZWV5aHc).
+
+My goal was to discover, through a relatively small dataset, what features in a material led to fast oxide diffusion in SOFCs. I mainly used Pandas for data processing and SciKit Learn for machine learning algorithms. This was not a typical machine learning problem because I had a small amount of data and was not only interested in maximizing the fit, but also in developing a theory that was physically justifiable (i.e. one or two factors influencing diffusion modeled with a 1st, 2nd, or 3rd polynomial).
 
 My conclusion was that the log of combined surface exchange (k*) and bulk diffusion (D*) coefficients was, for perovskites and double perovskites, explained primarily by a roughly linear function of the electron affinity for the B-site cation.
 
